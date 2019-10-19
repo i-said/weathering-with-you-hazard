@@ -1,5 +1,6 @@
 
 mapboxgl.accessToken = "pk.eyJ1Ijoic2hteXQiLCJhIjoiY2ozbWE0djUwMDAwMjJxbmR6c2cxejAyciJ9.pqa04_rvKov3Linf7IAWPw";
+
 var map = new mapboxgl.Map({
 
     container: "map",
@@ -64,21 +65,30 @@ var map = new mapboxgl.Map({
                 "type": "raster",
                 "source": "KOUZUI",
                 "minzoom": 0,
-                "maxzoom": 18
+                "maxzoom": 18,
+                'layout': {
+                    'visibility': 'visible',
+                }
             },
             {
                 "id": "KYUKEISHAKEIKAIKUIKI",
                 "type": "raster",
                 "source": "KYUKEISHAKEIKAIKUIKI",
                 "minzoom": 0,
-                "maxzoom": 18
+                "maxzoom": 18,
+                'layout': {
+                    'visibility': 'visible',
+                }
             },
             {
                 "id": "DOSEKIRYUKIKENKEIRYU",
                 "type": "raster",
                 "source": "DOSEKIRYUKIKENKEIRYU",
                 "minzoom": 0,
-                "maxzoom": 18
+                "maxzoom": 18,
+                'layout': {
+                    'visibility': 'visible',
+                }
             }
         ]
     },
@@ -97,3 +107,30 @@ map.addControl(new mapboxgl.GeolocateControl({
     },
     trackUserLocation: true
 }));
+
+
+// 洪水レイヤー削除
+document.getElementById('kouzui').addEventListener('click', () => {
+    const layer = 'KOUZUI';
+    const visibility = map.getLayoutProperty(layer, 'visibility');
+    if (visibility === 'visible') {
+        map.setLayoutProperty(layer, 'visibility', 'none');
+    } else {
+        map.setLayoutProperty(layer, 'visibility', 'visible');
+    }
+});
+
+// 土砂レイヤー削除
+document.getElementById('dosya').addEventListener('click', () => {
+    const layer1 = 'KYUKEISHAKEIKAIKUIKI';
+    const layer2 = 'DOSEKIRYUKIKENKEIRYU';
+    const visibility1 = map.getLayoutProperty(layer1, 'visibility');
+
+    if (visibility1 === 'visible') {
+        map.setLayoutProperty(layer1, 'visibility', 'none');
+        map.setLayoutProperty(layer2, 'visibility', 'none');
+    } else {
+        map.setLayoutProperty(layer1, 'visibility', 'visible');
+        map.setLayoutProperty(layer2, 'visibility', 'visible');
+    }
+});
