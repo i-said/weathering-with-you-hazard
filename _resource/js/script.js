@@ -101,8 +101,6 @@ map.on('load', function () {
             'visibility': 'visible',
         }
     });
-    map.addLayer();
-    map.addLayer();
 });
 
 
@@ -119,26 +117,30 @@ map.addControl(new mapboxgl.GeolocateControl({
 }));
 
 // 洪水レイヤー削除
-document.getElementById('kouzui').addEventListener('click', () => {
+document.getElementById('kouzui').addEventListener('click', (elm) => {
     const layer = 'KOUZUI';
     const visibility = map.getLayoutProperty(layer, 'visibility');
     if (visibility === 'visible') {
+        elm.target.innerText = "洪水 表示切り替え 非表示中";
         map.setLayoutProperty(layer, 'visibility', 'none');
     } else {
+        elm.target.innerText = "洪水 表示切り替え 表示中";
         map.setLayoutProperty(layer, 'visibility', 'visible');
     }
 });
 
 // 土砂レイヤー削除
-document.getElementById('dosya').addEventListener('click', () => {
+document.getElementById('dosya').addEventListener('click', (elm) => {
     const layer1 = 'KYUKEISHAKEIKAIKUIKI';
     const layer2 = 'DOSEKIRYUKIKENKEIRYU';
     const visibility1 = map.getLayoutProperty(layer1, 'visibility');
 
     if (visibility1 === 'visible') {
+        elm.target.innerText = "土砂災害 表示切り替え 非表示中";
         map.setLayoutProperty(layer1, 'visibility', 'none');
         map.setLayoutProperty(layer2, 'visibility', 'none');
     } else {
+        elm.target.innerText = "土砂災害 表示切り替え 表示中";
         map.setLayoutProperty(layer1, 'visibility', 'visible');
         map.setLayoutProperty(layer2, 'visibility', 'visible');
     }
