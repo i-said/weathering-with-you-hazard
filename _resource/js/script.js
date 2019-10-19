@@ -13,6 +13,7 @@ var map = new mapboxgl.Map({
 });
 
 map.on('load', function () {
+    const mapopacity = 0.5
     // map.addSource('gis-dem', {
     //     "type": "raster-dem",
     //     "encoding": "gsi",
@@ -67,8 +68,12 @@ map.on('load', function () {
         "maxzoom": 18,
         'layout': {
             'visibility': 'visible',
+        },
+        "paint": {
+            'raster-opacity': mapopacity,
         }
     });
+
     // map.addLayer({
     //     "id": "GSI dem",
     //     "source": "gsi-dem",
@@ -89,8 +94,12 @@ map.on('load', function () {
         "maxzoom": 18,
         'layout': {
             'visibility': 'visible',
+        },
+        "paint": {
+            'raster-opacity': mapopacity,
         }
     });
+
     map.addLayer({
         "id": "DOSEKIRYUKIKENKEIRYU",
         "type": "raster",
@@ -99,8 +108,12 @@ map.on('load', function () {
         "maxzoom": 18,
         'layout': {
             'visibility': 'visible',
+        },
+        "paint": {
+            'raster-opacity': mapopacity,
         }
     });
+
 });
 
 
