@@ -7,14 +7,14 @@ var map = new mapboxgl.Map({
     style: {
         "version": 8,
         "sources": {
-            "NORMAL": {
-                "type": "vector",
-                "url": "mapbox://styles/mapbox/streets-v11"
-            },
-            "MIZU": {
-                "type": "vector",
-                "url": "mapbox://styles/v1/shmyt/cj4dvtopr044m2sn5m86h4ih2"
-            },
+            // "NORMAL": {
+            //     "type": "vector",
+            //     "url": "mapbox://styles/mapbox/streets-v11"
+            // },
+            // "MIZU": {
+            //     "type": "vector",
+            //     "url": "mapbox://styles/v1/shmyt/cj4dvtopr044m2sn5m86h4ih2"
+            // },
             'dem': {
                 "type": "raster-dem",
                 "url": "mapbox://mapbox.terrain-rgb"
@@ -42,6 +42,13 @@ var map = new mapboxgl.Map({
                 "tiles": ["https://disaportaldata.gsi.go.jp/raster/05_dosekiryukikenkeiryu/{z}/{x}/{y}.png"],
                 "tileSize": 256
             },
+            // "wms": {
+            //     'type': 'raster',
+            //     'tiles': [
+            //         'https://img.nj.gov/imagerywms/Natural2015?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=Natural2015'
+            //     ],
+            //     'tileSize': 256
+            // }
             // "MIZU": {
             //     "type": "vector",
             //     "tiles": "mapbox://styles/v1/shmyt/cj4dvtopr044m2sn5m86h4ih2"
@@ -80,16 +87,6 @@ var map = new mapboxgl.Map({
                     'visibility': 'visible',
                 }
             },
-            {
-                "id": "DOSEKIRYUKIKENKEIRYU",
-                "type": "raster",
-                "source": "DOSEKIRYUKIKENKEIRYU",
-                "minzoom": 0,
-                "maxzoom": 18,
-                'layout': {
-                    'visibility': 'visible',
-                }
-            }
         ]
     },
     center: [139.767, 35.681],
@@ -107,6 +104,25 @@ map.addControl(new mapboxgl.GeolocateControl({
     },
     trackUserLocation: true
 }));
+
+// map.addSource('HINANJO', {
+//     type: 'geojson',
+//     data: '/geodata.geojson'
+// });
+
+map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/400px-Cat_silhouette.svg.png', function (error, image) {
+    if (error) throw error;
+    map.addImage('cat', image);
+    map.addLayer({
+        "id": "points",
+        "type": "symbol",
+        "source": "HINANJO",
+        "layout": {
+            "icon-image": "cat",
+            "icon-size": 0.10
+        }
+    });
+});
 
 
 // 洪水レイヤー削除
