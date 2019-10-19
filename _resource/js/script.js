@@ -128,8 +128,34 @@ document.getElementById('dosya').addEventListener('click', () => {
     }
 });
 
+
+if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(async position => {
+        // 避難所を更新ごとに一旦消す
+        hinanjyoMarkers.forEach(m => {
+            m.remove();
+        })
+
+        const result = await requestHinanjyoAPI(position.coords.latitude, position.coords.longitude);
+        console.log(result.data.Feature);
+        // 新しい位置での避難所表示
+        result.data.Feature.forEach(f => {
+            console.log(f);
+            const coordinates = f.Geometry.Coordinates.split(',');
+            console.log(coordinates);
+            console.log(f.Name);
+            createMarker(coordinates[1], coordinates[0], f.Name);
+        });
+    });
+} else { /* geolocation IS NOT available, handle it */ }
+
+/**
+ * 避難所取得
+ * @param {} lat 
+ * @param {*} lng 
+ */
 async function requestHinanjyoAPI(lat, lng) {
-    var url = `https://map.yahooapis.jp/search/local/V1/localSearch?appid=dj00aiZpPWthaFNxUDdmN3pTUSZzPWNvbnN1bWVyc2VjcmV0Jng9Y2Y-&output=jsonp&gc=0425&dist=3&results=100&lat=${lat}&lon=${lng}`;
+    var url = `https://map.yahooapis.jp/search/local/V1/localSearch?appid=dj00aiZpPWthaFNxUDdmN3pTUSZzPWNvbnN1bWVyc2VjcmV0Jng9Y2Y-&output=jsonp&gc=0425&dist=1&results=100&lat=${lat}&lon=${lng}`;
     const config = {
         adapter: axiosJsonpAdapter
     };
@@ -138,22 +164,13 @@ async function requestHinanjyoAPI(lat, lng) {
     });
 }
 
-if ("geolocation" in navigator) {
-    navigator.geolocation.getCurrentPosition(async position => {
-        const result = await requestHinanjyoAPI(position.coords.latitude, position.coords.longitude);
-        console.log(result.data.Feature);
-        result.data.Feature.forEach(f => {
-            console.log(f);
-            const coordinates = f.Geometry.Coordinates.split(',');
-            console.log(coordinates);
-            createMarker(coordinates[1], coordinates[0], f.Name);
-        });
-
-        // createHinanjyoGeojson(result.data.Feature);
-    });
-} else { /* geolocation IS NOT available, handle it */ }
-
-
+/**
+ * 避難所マーカー作成
+ * 
+ * @param {} lat 
+ * @param {*} lng 
+ * @param {*} name 
+ */
 function createMarker(lat, lng, name) {
     var el = document.createElement('div');
     el.className = 'marker';
@@ -164,32 +181,34 @@ function createMarker(lat, lng, name) {
     // el.addEventListener('click', function () {
     //     window.alert(marker.properties.message);
     // });
+    // create the popup
+    var popup = new mapboxgl.Popup()
+        .setText(name);
 
     // add marker to map
     const marker = new mapboxgl.Marker(el)
+        .setPopup(popup)
         .setLngLat(new mapboxgl.LngLat(lng, lat));
     marker.addTo(map);
+    // marker.togglePopup();
     hinanjyoMarkers.push(marker);
     console.log(hinanjyoMarkers);
 }
 
-
-
-
-
-const LayerHinanjyo = 'hinanjyo';
-function createHinanjyoGeojson(hinanjyoFeatures) {
-    const geojsonFeatures = hinanjyoFeatures.map(f => {
-        console.log(f);
-        const geometry = f.Geometry;
-        const coordinates = geometry.split(',');
-        console.log(coordinates);
-        return {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [coordinates[1], coordinates[0]]
-            }
-        }
-    });
-}
+// 使わない
+// const LayerHinanjyo = 'hinanjyo';
+// function createHinanjyoGeojson(hinanjyoFeatures) {
+//     const geojsonFeatures = hinanjyoFeatures.map(f => {
+//         console.log(f);
+//         const geometry = f.Geometry;
+//         const coordinates = geometry.split(',');
+//         console.log(coordinates);
+//         return {
+//             "type": "Feature",
+//             "geometry": {
+//                 "type": "Point",
+//                 "coordinates": [coordinates[1], coordinates[0]]
+//             }
+//         }
+//     });
+// }
