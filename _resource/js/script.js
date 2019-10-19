@@ -1,5 +1,6 @@
 const axios = require("axios");
 const axiosJsonpAdapter = require("axios-jsonp");
+const direction = require("./direction");
 const hinanjyoMarkers = [];
 
 mapboxgl.accessToken = "pk.eyJ1Ijoic2hteXQiLCJhIjoiY2ozbWE0djUwMDAwMjJxbmR6c2cxejAyciJ9.pqa04_rvKov3Linf7IAWPw";
@@ -83,6 +84,16 @@ var map = new mapboxgl.Map({
                     'visibility': 'visible',
                 }
             },
+            {
+                "id": "DOSEKIRYUKIKENKEIRYU",
+                "type": "raster",
+                "source": "DOSEKIRYUKIKENKEIRYU",
+                "minzoom": 0,
+                "maxzoom": 18,
+                'layout': {
+                    'visibility': 'visible',
+                }
+            },
         ]
     },
     center: [139.767, 35.681],
@@ -99,8 +110,6 @@ map.addControl(new mapboxgl.GeolocateControl({
     },
     trackUserLocation: true
 }));
-
-
 
 // 洪水レイヤー削除
 document.getElementById('kouzui').addEventListener('click', () => {
@@ -151,21 +160,24 @@ if ("geolocation" in navigator) {
             m.remove();
         })
 
-        const result = await requestHinanjyoAPI(position.coords.latitude, position.coords.longitude);
-        console.log(result.data.Feature);
+        const currentLat = position.coords.latitude;
+        const currentLng = position.coords.longitude;
 
-        // 新しい位置での避難所表示
+        const result = await requestHinanjyoAPI(currentLat, currentLng);
         if (!result.data.Feature) {
             return;
         }
-
+        // 新しい位置での避難所表示
         result.data.Feature.forEach(f => {
-            console.log(f);
             const coordinates = f.Geometry.Coordinates.split(',');
-            console.log(coordinates);
-            console.log(f.Name);
             createMarker(coordinates[1], coordinates[0], f.Name);
         });
+
+        // ground escape direction 
+        const escapeDirection = await direction.suggestDirection({ lat: currentLat, lon: currentLng });
+        console.log(escapeDirection);
+
+
     }, (err) => { }, {
         timeout: 10000
     });
@@ -192,5 +204,4 @@ function createMarker(lat, lng, name) {
     marker.addTo(map);
     // marker.togglePopup();
     hinanjyoMarkers.push(marker);
-    console.log(hinanjyoMarkers);
 }
