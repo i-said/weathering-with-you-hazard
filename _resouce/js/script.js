@@ -64,13 +64,13 @@ var map = new mapboxgl.Map({
                 "minzoom": 0,
                 "maxzoom": 18
             },
-            // {
-            //     "id": "DOSYA_SAIGAI",
-            //     "type": "raster",
-            //     "source": "DOSYA_SAIGAI",
-            //     "minzoom": 0,
-            //     "maxzoom": 18
-            // }
+            {
+                "id": "DOSYA_SAIGAI",
+                "type": "raster",
+                "source": "DOSYA_SAIGAI",
+                "minzoom": 0,
+                "maxzoom": 18
+            }
         ]
     },
     center: [139.767, 35.681],
