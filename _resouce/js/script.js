@@ -29,15 +29,17 @@ var map = new mapboxgl.Map({
                 "tiles": ["https://disaportaldata.gsi.go.jp/raster/01_flood_l2_shinsuishin/{z}/{x}/{y}.png"],
                 "tileSize": 256
             },
-            "DOSYA_SAIGAI": {
+            // 急傾斜警戒区域
+            "KYUKEISHAKEIKAIKUIKI": {
                 "type": "raster",
                 "tiles": ["https://disaportaldata.gsi.go.jp/raster/05_kyukeishakeikaikuiki/{z}/{x}/{y}.png"],
                 "tileSize": 256
             },
-            "DOSYA_SAIGAI": {
+            // 土石流警戒区域
+            "DOSEKIRYUKIKENKEIRYU": {
                 "type": "raster",
-                "tiles": ["https://disaportaldata.gsi.go.jp/raster/05_kyukeishakeikaikuiki/{z}/{x}/{y}.png"],
-                "tileSize": 512
+                "tiles": ["https://disaportaldata.gsi.go.jp/raster/05_dosekiryukikenkeiryu/{z}/{x}/{y}.png"],
+                "tileSize": 256
             },
             // "MIZU": {
             //     "type": "vector",
@@ -65,9 +67,16 @@ var map = new mapboxgl.Map({
                 "maxzoom": 18
             },
             {
-                "id": "DOSYA_SAIGAI",
+                "id": "KYUKEISHAKEIKAIKUIKI",
                 "type": "raster",
-                "source": "DOSYA_SAIGAI",
+                "source": "KYUKEISHAKEIKAIKUIKI",
+                "minzoom": 0,
+                "maxzoom": 18
+            },
+            {
+                "id": "DOSEKIRYUKIKENKEIRYU",
+                "type": "raster",
+                "source": "DOSEKIRYUKIKENKEIRYU",
                 "minzoom": 0,
                 "maxzoom": 18
             }
