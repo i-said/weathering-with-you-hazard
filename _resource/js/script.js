@@ -128,6 +128,20 @@ document.getElementById('dosya').addEventListener('click', () => {
     }
 });
 
+/**
+ * 避難所取得
+ * @param {} lat 
+ * @param {*} lng 
+ */
+async function requestHinanjyoAPI(lat, lng) {
+    var url = `https://map.yahooapis.jp/search/local/V1/localSearch?appid=dj00aiZpPWthaFNxUDdmN3pTUSZzPWNvbnN1bWVyc2VjcmV0Jng9Y2Y-&output=jsonp&gc=0425&dist=3&results=100&lat=${lat}&lon=${lng}`;
+    const config = {
+        adapter: axiosJsonpAdapter
+    };
+    return await axios(url, config).then(res => {
+        return res;
+    });
+}
 
 if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(async position => {
@@ -149,28 +163,6 @@ if ("geolocation" in navigator) {
     });
 } else { /* geolocation IS NOT available, handle it */ }
 
-/**
- * 避難所取得
- * @param {} lat 
- * @param {*} lng 
- */
-async function requestHinanjyoAPI(lat, lng) {
-    var url = `https://map.yahooapis.jp/search/local/V1/localSearch?appid=dj00aiZpPWthaFNxUDdmN3pTUSZzPWNvbnN1bWVyc2VjcmV0Jng9Y2Y-&output=jsonp&gc=0425&dist=1&results=100&lat=${lat}&lon=${lng}`;
-    const config = {
-        adapter: axiosJsonpAdapter
-    };
-    return await axios(url, config).then(res => {
-        return res;
-    });
-}
-
-/**
- * 避難所マーカー作成
- * 
- * @param {} lat 
- * @param {*} lng 
- * @param {*} name 
- */
 function createMarker(lat, lng, name) {
     var el = document.createElement('div');
     el.className = 'marker';
@@ -194,21 +186,3 @@ function createMarker(lat, lng, name) {
     hinanjyoMarkers.push(marker);
     console.log(hinanjyoMarkers);
 }
-
-// 使わない
-// const LayerHinanjyo = 'hinanjyo';
-// function createHinanjyoGeojson(hinanjyoFeatures) {
-//     const geojsonFeatures = hinanjyoFeatures.map(f => {
-//         console.log(f);
-//         const geometry = f.Geometry;
-//         const coordinates = geometry.split(',');
-//         console.log(coordinates);
-//         return {
-//             "type": "Feature",
-//             "geometry": {
-//                 "type": "Point",
-//                 "coordinates": [coordinates[1], coordinates[0]]
-//             }
-//         }
-//     });
-// }
