@@ -5,11 +5,11 @@
     "main": "main.js",
     "scripts": {
         "build": "webpack",
-        "dev": "webpack-dev-server"
+        "dev": "webpack-dev-server --mode=development"
     },
     "keywords": [],
-    "author": "Yasunori Kirimoto",
-    "license": "ISC",
+    "author": "LatLngLngLab",
+    "license": "Apache License 2.0",
     "devDependencies": {
         "webpack": "^4.39.1",
         "webpack-cli": "^3.3.6",

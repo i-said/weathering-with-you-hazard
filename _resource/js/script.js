@@ -1,7 +1,8 @@
 const axios = require("axios");
 const axiosJsonpAdapter = require("axios-jsonp");
 const direction = require("./direction");
-const hinanjyoMarkers = [];
+let hinanjyoMarkers = [];
+let escapeMarker = null;
 
 mapboxgl.accessToken = "pk.eyJ1Ijoic2hteXQiLCJhIjoiY2ozbWE0djUwMDAwMjJxbmR6c2cxejAyciJ9.pqa04_rvKov3Linf7IAWPw";
 var map = new mapboxgl.Map({
@@ -23,7 +24,7 @@ var map = new mapboxgl.Map({
             },
             "MIERUNEMAP": {
                 "type": "raster",
-                "tiles": ["https://tile.mierune.co.jp/mierune_mono/{z}/{x}/{y}.png"],
+                "tiles": ["https://tile.mierune.co.jp/mierune_mono/{z}/{x}/{y}.png@2x"],
                 "tileSize": 256,
                 "attribution": "Maptiles by <a href='http://mierune.co.jp/' target='_blank'>MIERUNE</a>, under CC BY. Data by <a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors, under ODbL."
             },
@@ -73,6 +74,13 @@ var map = new mapboxgl.Map({
                 'layout': {
                     'visibility': 'visible',
                 }
+            },
+            {
+                "id": "dem",
+                "type": "hillshade",
+                "source": "dem",
+                "minzoom": 0,
+                "maxzoom": 18,
             },
             {
                 "id": "KYUKEISHAKEIKAIKUIKI",
@@ -156,9 +164,8 @@ if ("geolocation" in navigator) {
     navigator.geolocation.watchPosition(async position => {
         console.log("位置 更新!!!");
         // 避難所を更新ごとに一旦消す
-        hinanjyoMarkers.forEach(m => {
-            m.remove();
-        })
+        clearEscapeMarker();
+        clearHinanjyoMarkers();
 
         const currentLat = position.coords.latitude;
         const currentLng = position.coords.longitude;
@@ -170,20 +177,21 @@ if ("geolocation" in navigator) {
         // 新しい位置での避難所表示
         result.data.Feature.forEach(f => {
             const coordinates = f.Geometry.Coordinates.split(',');
-            createMarker(coordinates[1], coordinates[0], f.Name);
+            createHinanjyoMarker(coordinates[1], coordinates[0], f.Name);
         });
 
         // ground escape direction 
         const escapeDirection = await direction.suggestDirection({ lat: currentLat, lon: currentLng });
+        if (!escapeDirection) {
+            return;
+        }
+        createEscapeDirectionMarker(escapeDirection.lat, escapeDirection.lon);
         console.log(escapeDirection);
 
-
-    }, (err) => { }, {
-        timeout: 10000
-    });
+    }, (err) => { });
 } else { /* geolocation IS NOT available, handle it */ }
 
-function createMarker(lat, lng, name) {
+function createHinanjyoMarker(lat, lng, name) {
     var el = document.createElement('div');
     el.className = 'marker';
     el.style.backgroundColor = 'green';
@@ -204,4 +212,33 @@ function createMarker(lat, lng, name) {
     marker.addTo(map);
     // marker.togglePopup();
     hinanjyoMarkers.push(marker);
+}
+
+function createEscapeDirectionMarker(lat, lng) {
+    var el = document.createElement('div');
+    el.className = 'marker';
+    el.style.backgroundColor = 'red';
+    el.style.width = '15px';
+    el.style.height = '15px';
+
+    // add marker to map
+    const marker = new mapboxgl.Marker(el)
+        .setLngLat(new mapboxgl.LngLat(lng, lat));
+    marker.addTo(map);
+    escapeMarker = marker;
+}
+
+function clearHinanjyoMarkers() {
+    for (let index = 0; index < hinanjyoMarkers.length; index++) {
+        const m = hinanjyoMarkers[index];
+        m.remove();
+    }
+    hinanjyoMarkers = [];
+}
+
+function clearEscapeMarker() {
+    if (escapeMarker) {
+        escapeMarker.remove();
+    }
+    escapeMarker = null;
 }
