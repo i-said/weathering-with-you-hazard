@@ -89,3 +89,11 @@ var map = new mapboxgl.Map({
 
 // コントロール関係表示
 map.addControl(new mapboxgl.NavigationControl());
+
+// 現在位置表示
+map.addControl(new mapboxgl.GeolocateControl({
+    positionOptions: {
+        enableHighAccuracy: true
+    },
+    trackUserLocation: true
+}));
