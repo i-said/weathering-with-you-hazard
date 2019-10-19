@@ -15,6 +15,11 @@ var map = new mapboxgl.Map({
                 "type": "raster",
                 "tiles": ["https://disaportaldata.gsi.go.jp/raster/01_flood_l2_shinsuishin/{z}/{x}/{y}.png"],
                 "tileSize": 256
+            },
+            "DOSYA_SAIGAI": {
+                "type": "raster",
+                "tiles": ["https://disaportaldata.gsi.go.jp/raster/05_kyukeishakeikaikuiki/{z}/{x}/{y}.png"],
+                "tileSize": 256
             }
         },
         "layers": [
@@ -29,6 +34,13 @@ var map = new mapboxgl.Map({
                 "id": "KOUZUI",
                 "type": "raster",
                 "source": "KOUZUI",
+                "minzoom": 0,
+                "maxzoom": 18
+            },
+            {
+                "id": "DOSYA_SAIGAI",
+                "type": "raster",
+                "source": "DOSYA_SAIGAI",
                 "minzoom": 0,
                 "maxzoom": 18
             }
