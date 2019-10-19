@@ -2,7 +2,7 @@ const webpack = require("webpack");
 
 module.exports = {
     mode: 'production',
-    entry: './_resouce/main.js',
+    entry: './_resource/main.js',
     output: {
         path: __dirname + '/dist',
         filename: 'app.js'
