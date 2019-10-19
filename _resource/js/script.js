@@ -144,7 +144,8 @@ async function requestHinanjyoAPI(lat, lng) {
 }
 
 if ("geolocation" in navigator) {
-    navigator.geolocation.getCurrentPosition(async position => {
+    navigator.geolocation.watchPosition(async position => {
+        console.log("位置 更新!!!");
         // 避難所を更新ごとに一旦消す
         hinanjyoMarkers.forEach(m => {
             m.remove();
@@ -165,6 +166,8 @@ if ("geolocation" in navigator) {
             console.log(f.Name);
             createMarker(coordinates[1], coordinates[0], f.Name);
         });
+    }, (err) => { }, {
+        timeout: 10000
     });
 } else { /* geolocation IS NOT available, handle it */ }
 
