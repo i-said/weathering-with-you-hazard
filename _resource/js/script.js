@@ -1,8 +1,5 @@
-
 mapboxgl.accessToken = "pk.eyJ1Ijoic2hteXQiLCJhIjoiY2ozbWE0djUwMDAwMjJxbmR6c2cxejAyciJ9.pqa04_rvKov3Linf7IAWPw";
-
 var map = new mapboxgl.Map({
-
     container: "map",
     style: {
         "version": 8,
@@ -63,11 +60,6 @@ var map = new mapboxgl.Map({
                 "maxzoom": 18
             },
             {
-                "id": "hillshading",
-                "source": "dem",
-                "type": "hillshade"
-            },
-            {
                 "id": "KOUZUI",
                 "type": "raster",
                 "source": "KOUZUI",
@@ -92,7 +84,6 @@ var map = new mapboxgl.Map({
     center: [139.767, 35.681],
     zoom: 11
 });
-// map.setStyle('mapbox://styles/mapbox/streets-v11');
 
 // コントロール関係表示
 map.addControl(new mapboxgl.NavigationControl());
