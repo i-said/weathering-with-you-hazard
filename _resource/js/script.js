@@ -152,7 +152,12 @@ if ("geolocation" in navigator) {
 
         const result = await requestHinanjyoAPI(position.coords.latitude, position.coords.longitude);
         console.log(result.data.Feature);
+
         // 新しい位置での避難所表示
+        if (!result.data.Feature) {
+            return;
+        }
+
         result.data.Feature.forEach(f => {
             console.log(f);
             const coordinates = f.Geometry.Coordinates.split(',');
