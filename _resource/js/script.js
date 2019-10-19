@@ -6,107 +6,106 @@ let escapeMarker = null;
 
 mapboxgl.accessToken = "pk.eyJ1Ijoic2hteXQiLCJhIjoiY2ozbWE0djUwMDAwMjJxbmR6c2cxejAyciJ9.pqa04_rvKov3Linf7IAWPw";
 var map = new mapboxgl.Map({
-    container: "map",
-    style: {
-        "version": 8,
-        "sources": {
-            // "NORMAL": {
-            //     "type": "vector",
-            //     "url": "mapbox://styles/mapbox/streets-v11"
-            // },
-            // "MIZU": {
-            //     "type": "vector",
-            //     "url": "mapbox://styles/v1/shmyt/cj4dvtopr044m2sn5m86h4ih2"
-            // },
-            'dem': {
-                "type": "raster-dem",
-                "url": "mapbox://mapbox.terrain-rgb"
-            },
-            "MIERUNEMAP": {
-                "type": "raster",
-                "tiles": ["https://tile.mierune.co.jp/mierune_mono/{z}/{x}/{y}.png@2x"],
-                "tileSize": 256,
-                "attribution": "Maptiles by <a href='http://mierune.co.jp/' target='_blank'>MIERUNE</a>, under CC BY. Data by <a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors, under ODbL."
-            },
-            "KOUZUI": {
-                "type": "raster",
-                "tiles": ["https://disaportaldata.gsi.go.jp/raster/01_flood_l2_shinsuishin/{z}/{x}/{y}.png"],
-                "tileSize": 256
-            },
-            // 急傾斜警戒区域
-            "KYUKEISHAKEIKAIKUIKI": {
-                "type": "raster",
-                "tiles": ["https://disaportaldata.gsi.go.jp/raster/05_kyukeishakeikaikuiki/{z}/{x}/{y}.png"],
-                "tileSize": 256
-            },
-            // 土石流警戒区域
-            "DOSEKIRYUKIKENKEIRYU": {
-                "type": "raster",
-                "tiles": ["https://disaportaldata.gsi.go.jp/raster/05_dosekiryukikenkeiryu/{z}/{x}/{y}.png"],
-                "tileSize": 256
-            },
-            // "wms": {
-            //     'type': 'raster',
-            //     'tiles': [
-            //         'https://img.nj.gov/imagerywms/Natural2015?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=Natural2015'
-            //     ],
-            //     'tileSize': 256
-            // }
-            // "MIZU": {
-            //     "type": "vector",
-            //     "tiles": "mapbox://styles/v1/shmyt/cj4dvtopr044m2sn5m86h4ih2"
-            // }
-        },
-        "layers": [
-            {
-                "id": "MIERUNEMAP",
-                "type": "raster",
-                "source": "MIERUNEMAP",
-                "minzoom": 0,
-                "maxzoom": 18
-            },
-            {
-                "id": "KOUZUI",
-                "type": "raster",
-                "source": "KOUZUI",
-                "minzoom": 0,
-                "maxzoom": 18,
-                'layout': {
-                    'visibility': 'visible',
-                }
-            },
-            {
-                "id": "dem",
-                "type": "hillshade",
-                "source": "dem",
-                "minzoom": 0,
-                "maxzoom": 18,
-            },
-            {
-                "id": "KYUKEISHAKEIKAIKUIKI",
-                "type": "raster",
-                "source": "KYUKEISHAKEIKAIKUIKI",
-                "minzoom": 0,
-                "maxzoom": 18,
-                'layout': {
-                    'visibility': 'visible',
-                }
-            },
-            {
-                "id": "DOSEKIRYUKIKENKEIRYU",
-                "type": "raster",
-                "source": "DOSEKIRYUKIKENKEIRYU",
-                "minzoom": 0,
-                "maxzoom": 18,
-                'layout': {
-                    'visibility': 'visible',
-                }
-            },
-        ]
-    },
+    container: 'map',
+    style: 'mapbox://styles/mapbox/cjaudgl840gn32rnrepcb9b9g', // the outdoors-v10 style but without Hillshade layers
     center: [139.767, 35.681],
     zoom: 11
 });
+
+map.on('load', function () {
+    // map.addSource('gis-dem', {
+    //     "type": "raster-dem",
+    //     "encoding": "gsi",
+    //     "tiles": [
+    //         "https://cyberjapandata.gsi.go.jp/xyz/dem_png/{z}/{x}/{y}.png"
+    //     ],
+    //     "tileSize": 256,
+    //     "maxzoom": 14,
+    //     "attribution": '<a href="https://maps.gsi.go.jp/development/ichiran.html#dem" target="_blank">地理院標高タイル</a>'
+    // });
+    map.addSource('dem', {
+        "type": "raster-dem",
+        "url": "mapbox://mapbox.terrain-rgb"
+    });
+
+    map.addSource('MIERUNEMAP', {
+        "type": "raster",
+        "tiles": ["https://tile.mierune.co.jp/mierune_mono/{z}/{x}/{y}.png@2x"],
+        "tileSize": 256,
+        "attribution": "Maptiles by <a href='http://mierune.co.jp/' target='_blank'>MIERUNE</a>, under CC BY. Data by <a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors, under ODbL."
+    });
+    map.addSource('KOUZUI', {
+        "type": "raster",
+        "tiles": ["https://disaportaldata.gsi.go.jp/raster/01_flood_l2_shinsuishin/{z}/{x}/{y}.png"],
+        "tileSize": 256
+    });
+    map.addSource('KYUKEISHAKEIKAIKUIKI', {
+        "type": "raster",
+        "tiles": ["https://disaportaldata.gsi.go.jp/raster/05_kyukeishakeikaikuiki/{z}/{x}/{y}.png"],
+        "tileSize": 256
+    });
+    map.addSource('DOSEKIRYUKIKENKEIRYU', {
+        "type": "raster",
+        "tiles": ["https://disaportaldata.gsi.go.jp/raster/05_dosekiryukikenkeiryu/{z}/{x}/{y}.png"],
+        "tileSize": 256
+    });
+
+
+    // map.addLayer({
+    //     "id": "MIERUNEMAP",
+    //     "type": "raster",
+    //     "source": "MIERUNEMAP",
+    //     "minzoom": 0,
+    //     "maxzoom": 18
+    // });
+
+    map.addLayer({
+        "id": "KOUZUI",
+        "type": "raster",
+        "source": "KOUZUI",
+        "minzoom": 0,
+        "maxzoom": 18,
+        'layout': {
+            'visibility': 'visible',
+        }
+    });
+    // map.addLayer({
+    //     "id": "GSI dem",
+    //     "source": "gsi-dem",
+    //     "type": "hillshade"
+    // }, 'waterway-river-canal-shadow');
+    map.addLayer({
+        "id": "dem",
+        "type": "hillshade",
+        "source": "dem",
+        "minzoom": 0,
+        "maxzoom": 18,
+    });
+    map.addLayer({
+        "id": "KYUKEISHAKEIKAIKUIKI",
+        "type": "raster",
+        "source": "KYUKEISHAKEIKAIKUIKI",
+        "minzoom": 0,
+        "maxzoom": 18,
+        'layout': {
+            'visibility': 'visible',
+        }
+    });
+    map.addLayer({
+        "id": "DOSEKIRYUKIKENKEIRYU",
+        "type": "raster",
+        "source": "DOSEKIRYUKIKENKEIRYU",
+        "minzoom": 0,
+        "maxzoom": 18,
+        'layout': {
+            'visibility': 'visible',
+        }
+    });
+    map.addLayer();
+    map.addLayer();
+});
+
+
 
 // コントロール関係表示
 map.addControl(new mapboxgl.NavigationControl());
