@@ -1,3 +1,7 @@
+const axios = require("axios");
+const axiosJsonpAdapter = require("axios-jsonp");
+const hinanjyoMarkers = [];
+
 mapboxgl.accessToken = "pk.eyJ1Ijoic2hteXQiLCJhIjoiY2ozbWE0djUwMDAwMjJxbmR6c2cxejAyciJ9.pqa04_rvKov3Linf7IAWPw";
 var map = new mapboxgl.Map({
     container: "map",
@@ -96,24 +100,6 @@ map.addControl(new mapboxgl.GeolocateControl({
     trackUserLocation: true
 }));
 
-// map.addSource('HINANJO', {
-//     type: 'geojson',
-//     data: '/geodata.geojson'
-// });
-
-map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Cat_silhouette.svg/400px-Cat_silhouette.svg.png', function (error, image) {
-    if (error) throw error;
-    map.addImage('cat', image);
-    map.addLayer({
-        "id": "points",
-        "type": "symbol",
-        "source": "HINANJO",
-        "layout": {
-            "icon-image": "cat",
-            "icon-size": 0.10
-        }
-    });
-});
 
 
 // 洪水レイヤー削除
@@ -141,3 +127,69 @@ document.getElementById('dosya').addEventListener('click', () => {
         map.setLayoutProperty(layer2, 'visibility', 'visible');
     }
 });
+
+async function requestHinanjyoAPI(lat, lng) {
+    var url = `https://map.yahooapis.jp/search/local/V1/localSearch?appid=dj00aiZpPWthaFNxUDdmN3pTUSZzPWNvbnN1bWVyc2VjcmV0Jng9Y2Y-&output=jsonp&gc=0425&dist=3&results=100&lat=${lat}&lon=${lng}`;
+    const config = {
+        adapter: axiosJsonpAdapter
+    };
+    return await axios(url, config).then(res => {
+        return res;
+    });
+}
+
+if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(async position => {
+        const result = await requestHinanjyoAPI(position.coords.latitude, position.coords.longitude);
+        console.log(result.data.Feature);
+        result.data.Feature.forEach(f => {
+            console.log(f);
+            const coordinates = f.Geometry.Coordinates.split(',');
+            console.log(coordinates);
+            createMarker(coordinates[1], coordinates[0], f.Name);
+        });
+
+        // createHinanjyoGeojson(result.data.Feature);
+    });
+} else { /* geolocation IS NOT available, handle it */ }
+
+
+function createMarker(lat, lng, name) {
+    var el = document.createElement('div');
+    el.className = 'marker';
+    el.style.backgroundColor = 'green';
+    el.style.width = '10px';
+    el.style.height = '10px';
+
+    // el.addEventListener('click', function () {
+    //     window.alert(marker.properties.message);
+    // });
+
+    // add marker to map
+    const marker = new mapboxgl.Marker(el)
+        .setLngLat(new mapboxgl.LngLat(lng, lat));
+    marker.addTo(map);
+    hinanjyoMarkers.push(marker);
+    console.log(hinanjyoMarkers);
+}
+
+
+
+
+
+const LayerHinanjyo = 'hinanjyo';
+function createHinanjyoGeojson(hinanjyoFeatures) {
+    const geojsonFeatures = hinanjyoFeatures.map(f => {
+        console.log(f);
+        const geometry = f.Geometry;
+        const coordinates = geometry.split(',');
+        console.log(coordinates);
+        return {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [coordinates[1], coordinates[0]]
+            }
+        }
+    });
+}
