@@ -380,3 +380,7 @@ async function fetchUserEscapeData(currentLat, currentLng) {
     const firstCoordinates = result.data.Feature[0].Geometry.Coordinates.split(',');
     await clearAndcreateRoute(currentLat, currentLng, firstCoordinates[1], firstCoordinates[0]);
 }
+
+$(document).ready(function(){
+    $('.tooltipped').tooltip();
+});
