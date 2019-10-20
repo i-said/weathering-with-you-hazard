@@ -25,14 +25,14 @@ map.on('load', function () {
     //     "type": "raster-dem",
     //     "url": "mapbox://mapbox.terrain-rgb"
     // });
-    map.addSource('gsi-pale', {
-        "type": "raster",
-        "tiles": [
-            "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
-        ],
-        "tileSize": 256,
-        "attribution": "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>"
-    });
+    // map.addSource('gsi-pale', {
+    //     "type": "raster",
+    //     "tiles": [
+    //         "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
+    //     ],
+    //     "tileSize": 256,
+    //     "attribution": "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>"
+    // });
     map.addSource('gsi-dem', {
         "type": "raster-dem",
         "tiles": [
@@ -176,6 +176,19 @@ document.getElementById('dosya').addEventListener('click', (elm) => {
         elm.target.innerText = "土砂災害 表示切り替え 表示中";
         map.setLayoutProperty(layer1, 'visibility', 'visible');
         map.setLayoutProperty(layer2, 'visibility', 'visible');
+    }
+});
+
+// 標高レイヤー削除
+document.getElementById('hyoukou').addEventListener('click', (elm) => {
+    const layer = 'GSI dem';
+    const visibility = map.getLayoutProperty(layer, 'visibility');
+    if (visibility === 'visible') {
+        elm.target.innerText = "標高 表示切り替え 非表示中";
+        map.setLayoutProperty(layer, 'visibility', 'none');
+    } else {
+        elm.target.innerText = "標高 表示切り替え 表示中";
+        map.setLayoutProperty(layer, 'visibility', 'visible');
     }
 });
 
