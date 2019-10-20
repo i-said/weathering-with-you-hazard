@@ -8,3 +8,77 @@ html, body {
     z-index: 0;
     height: 100%;
 }
+
+.zmap-h {
+    background-image: "";
+
+
+}
+
+.pin-solid.icon {
+    color: #ff0000;
+    position: absolute;
+    margin-left: 4px;
+    margin-top: 2px;
+    width: 12px;
+    height: 12px;
+    border: solid 1px currentColor;
+    border-radius: 7px 7px 7px 0;
+    background-color: currentColor;
+    -webkit-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+  }
+  
+  .pin-solid.icon:before {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    width: 4px;
+    height: 4px;
+    color: white;
+    border: solid 1px currentColor;
+    border-radius: 3px;
+    background-color: currentColor;
+  }
+  
+
+  .navigate-solid.icon {
+    color: #000;
+    position: absolute;
+    margin-left: 6px;
+    margin-top: -1px;
+    width: 14px;
+    height: 18px;
+    -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+  }
+  
+  .navigate-solid.icon:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -17px;
+    width: 0;
+    height: 0;
+    border-top: solid 18px transparent;
+    border-bottom: solid 18px currentColor;
+    border-left: solid 7px transparent;
+    border-right: solid 7px transparent;
+  }
+  
+  .navigate-solid.icon:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 0;
+    height: 0;
+    color: white;
+    border-top: solid 5px transparent;
+    border-bottom: solid 5px currentColor;
+    border-left: solid 7px transparent;
+    border-right: solid 7px transparent;
+  }
+  
+  
