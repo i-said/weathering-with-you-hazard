@@ -42,6 +42,8 @@ const guideLocationDiffForAllDirections = {
 }
 
 function calculateGuideLocation(current, directionSymbolName) {
+    if (!directionSymbolName) return { lat: null, lon: null};
+    
     return {
         lat: current.lat + guideLocationDiffForAllDirections[directionSymbolName].lat,
         lon: current.lon + guideLocationDiffForAllDirections[directionSymbolName].lon 
@@ -92,7 +94,7 @@ var getEightDirectionsLocationFromCurrentLocation = (currentLocation, distance) 
 
 async function requestEvaluationAPI(location, isCurrent) {
     // lat=35&lon=135&output=json
-    var url = 'http://cyberjapandata2.gsi.go.jp/general/dem/scripts/getelevation.php'
+    var url = 'https://cyberjapandata2.gsi.go.jp/general/dem/scripts/getelevation.php'
     var parameters = `?lat=${location.lat}&lon=${location.lon}&output=json`
     return await axios.get(url + parameters)
         .then(function (res) {
