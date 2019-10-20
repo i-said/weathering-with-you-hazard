@@ -136,10 +136,9 @@ map.on('load', function () {
 
 });
 
-
-
 // コントロール関係表示
 map.addControl(new mapboxgl.NavigationControl());
+map.addControl(new mapboxgl.ScaleControl());
 
 // 現在位置表示
 map.addControl(new mapboxgl.GeolocateControl({
