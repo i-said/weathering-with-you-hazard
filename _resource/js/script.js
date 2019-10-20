@@ -163,6 +163,7 @@ map.on('load', function () {
                 return;
             }
 
+            console.log("escaaaaaaaaaaaaaaaaape:  ", escapeDirection)
             // 経路再検索判断
             if (!previousEscapeDirection) {
                 createEscapeDirectionMarker(escapeDirection.lat, escapeDirection.lon);

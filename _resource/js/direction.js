@@ -1,5 +1,52 @@
 const axios = require('axios');
 const estimateDistance = 1000; // m
+const guideMarkerDistance = 50;
+const guideLocationDiff = {
+    lat: 0.0090133729745762 * guideMarkerDistance / 1000,  // 50m先を案内
+    lon: 0.010966404715491394 * guideMarkerDistance / 1000
+}
+
+const guideLocationDiffForAllDirections = {
+    N: {
+        lat: guideLocationDiff.lat,
+        lon: 0
+    },
+    NE: {
+        lat: guideLocationDiff.lat,
+        lon: guideLocationDiff.lon
+    },
+    E: {
+        lat: 0,
+        lon: guideLocationDiff.lon
+    },
+    SE: {
+        lat: 0 - guideLocationDiff.lat,
+        lon: guideLocationDiff.lon
+    },
+    S: {
+        lat: 0 - guideLocationDiff.lat,
+        lon: 0
+    },
+    SW: {
+        lat: 0 - guideLocationDiff.lat,
+        lon: 0 - guideLocationDiff.lon
+    },
+    W: {
+        lat: 0,
+        lon: 0 - guideLocationDiff.lon
+    },
+    NW: {
+        lat: guideLocationDiff.lat,
+        lon: 0 - guideLocationDiff.lon
+    },
+}
+
+function calculateGuideLocation(current, directionSymbolName) {
+    return {
+        lat: current.lat + guideLocationDiffForAllDirections[directionSymbolName].lat,
+        lon: current.lon + guideLocationDiffForAllDirections[directionSymbolName].lon 
+    }
+}
 
 var getEightDirectionsLocationFromCurrentLocation = (currentLocation, distance) => {
     var correction = distance / 1000; // 1kmあたりの誤差 
@@ -98,8 +145,15 @@ export async function suggestDirection(currentLocation) {
     }
 
     const suggestDirectionKeyName = await decideDirectionKeyToEvacuate(higherDirections);
-    console.log("suggest keyname:", suggestDirectionKeyName)
-    return eightDirections[suggestDirectionKeyName];
+    console.log("suggest keyname:", suggestDirectionKeyName);
+    const response = {
+        guideLocation: {}
+    }
+    response.guideLocation =  calculateGuideLocation(currentLocation, suggestDirectionKeyName);
+
+    Object.assign(response, eightDirections[suggestDirectionKeyName]);
+    console.log("return response is...", response);
+    return response;
 }
 
 // for test
