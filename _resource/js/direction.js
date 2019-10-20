@@ -119,9 +119,13 @@ async function decideDirectionKeyToEvacuate(directions) {
 
     // sortする / [1, 1] [1,0] だけという雑なのでもっといい方法がありそう...
     for (var key in directions) {
-        console.log("decideDirection:", directions[key])
         if (directions[key].every(val => val === 'higher')) {
             return key;
+        } else {
+            // TODO: 2点only version
+            if(directions[key][0] === 'high') {
+                return key;
+            }
         }
     }
     return null;
