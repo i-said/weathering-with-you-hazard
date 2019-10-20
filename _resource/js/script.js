@@ -325,8 +325,8 @@ async function clearAndcreateRoute(flat, flng, tlat, tlng) {
             "line-cap": "round"
         },
         "paint": {
-            "line-color": "#0000dd",
-            "line-width": 5
+            "line-color": "#1976d2",
+            "line-width": 4
         }
     }
     );
