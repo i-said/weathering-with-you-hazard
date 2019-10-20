@@ -17,11 +17,18 @@
         background-image: url(https://user-images.githubusercontent.com/4006425/67153816-2caa1c80-f32b-11e9-9a3c-61f83db6b3be.png);
         background-repeat: repeat;
       }
-      .navbar-logo {
-        width: 35px;
-        height: 35px;
-        margin: -7px 10px;
+      @media screen and (max-width:480px) { 
+        .navbar-logo {
+          width: 240px;
+          margin-top:10px;
+        }      
       }
+      @media screen and (min-width:480px) { 
+        .navbar-logo {
+          width: 400px;
+        }      
+      }
+
     </style>
     <title>Ground Escape</title>
 </head>
@@ -29,7 +36,8 @@
 <body>
     <nav class="light-blue lighten-2 nav-extended" role="navigation">
       <div class="nav-wrapper">
-        <a id="logo-container" href="#" class="brand-logo"><img class="navbar-logo" src="https://user-images.githubusercontent.com/4006425/67153946-d8546c00-f32d-11e9-988e-60e93c016c73.png">Zmap</a>
+        <a id="logo-container" href="#" class="brand-logo">
+          <img class="navbar-logo" src="https://user-images.githubusercontent.com/4006425/67154448-f030ed80-f337-11e9-9a6b-bfd0384411b6.png"></a>
       </div>
       <div class="nav-content light-blue lighten-5">
           <ul class="tabs tabs-transparent">
