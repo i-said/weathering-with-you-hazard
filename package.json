@@ -8,7 +8,7 @@
         "dev": "webpack-dev-server --mode=development"
     },
     "keywords": [],
-    "author": "LatLngLngLab",
+    "author": "LatLatLongLab",
     "license": "Apache License 2.0",
     "devDependencies": {
         "webpack": "^4.39.1",
