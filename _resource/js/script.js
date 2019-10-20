@@ -195,9 +195,12 @@ document.getElementById('kouzui').addEventListener('click', (elm) => {
     const visibility = map.getLayoutProperty(layer, 'visibility');
     if (visibility === 'visible') {
         elm.target.innerText = "洪水 表示切り替え 非表示中";
+        elm.target.classList.add('deactive');
         map.setLayoutProperty(layer, 'visibility', 'none');
     } else {
         elm.target.innerText = "洪水 表示切り替え 表示中";
+        elm.target.classList.remove('deactive');
+
         map.setLayoutProperty(layer, 'visibility', 'visible');
     }
 });
@@ -210,10 +213,12 @@ document.getElementById('dosya').addEventListener('click', (elm) => {
 
     if (visibility1 === 'visible') {
         elm.target.innerText = "土砂災害 表示切り替え 非表示中";
+        elm.target.classList.add('deactive');
         map.setLayoutProperty(layer1, 'visibility', 'none');
         map.setLayoutProperty(layer2, 'visibility', 'none');
     } else {
         elm.target.innerText = "土砂災害 表示切り替え 表示中";
+        elm.target.classList.remove('deactive');
         map.setLayoutProperty(layer1, 'visibility', 'visible');
         map.setLayoutProperty(layer2, 'visibility', 'visible');
     }
@@ -225,9 +230,11 @@ document.getElementById('hyoukou').addEventListener('click', (elm) => {
     const visibility = map.getLayoutProperty(layer, 'visibility');
     if (visibility === 'visible') {
         elm.target.innerText = "標高 表示切り替え 非表示中";
+        elm.target.classList.add('deactive');
         map.setLayoutProperty(layer, 'visibility', 'none');
     } else {
         elm.target.innerText = "標高 表示切り替え 表示中";
+        elm.target.classList.remove('deactive');
         map.setLayoutProperty(layer, 'visibility', 'visible');
     }
 });
