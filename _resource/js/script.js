@@ -377,7 +377,6 @@ async function fetchUserEscapeData(currentLat, currentLng) {
     createEscapeDirectionMarker(escapeDirection.lat, escapeDirection.lon);
     createNaviMaker(escapeDirection.guideLocation.lat, escapeDirection.guideLocation.lon);
 
-
-    // await clearAndcreateRoute(currentLat, currentLng, escapeDirection.lat, escapeDirection.lon);
-    await clearAndcreateRoute(currentLat, currentLng, coordinates[1], coordinates[0]);
+    const firstCoordinates = result.data.Feature[0].Geometry.Coordinates.split(',');
+    await clearAndcreateRoute(currentLat, currentLng, firstCoordinates[1], firstCoordinates[0]);
 }
