@@ -246,13 +246,11 @@ async function requestRouteAPI(flat, flng, tlat, tlng) {
 function createHinanjyoMarker(lat, lng, name) {
     var el = document.createElement('div');
     el.className = 'marker';
-    el.style.backgroundColor = 'green';
-    el.style.width = '10px';
-    el.style.height = '10px';
+    // el.style.backgroundColor = 'green';
+    el.style.backgroundImage = 'url(./zmap-mini2.png)';
+    el.style.width = '25px';
+    el.style.height = '25px';
 
-    // el.addEventListener('click', function () {
-    //     window.alert(marker.properties.message);
-    // });
     // create the popup
     var popup = new mapboxgl.Popup()
         .setText(name);
@@ -262,16 +260,12 @@ function createHinanjyoMarker(lat, lng, name) {
         .setPopup(popup)
         .setLngLat(new mapboxgl.LngLat(lng, lat));
     marker.addTo(map);
-    // marker.togglePopup();
     hinanjyoMarkers.push(marker);
 }
 
 function createEscapeDirectionMarker(lat, lng) {
     var el = document.createElement('div');
-    el.className = 'marker';
-    el.style.backgroundColor = 'red';
-    el.style.width = '15px';
-    el.style.height = '15px';
+    el.className = 'pin-solid icon';
 
     // add marker to map
     const marker = new mapboxgl.Marker(el)
