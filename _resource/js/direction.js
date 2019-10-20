@@ -147,7 +147,10 @@ export async function suggestDirection(currentLocation) {
     const suggestDirectionKeyName = await decideDirectionKeyToEvacuate(higherDirections);
     console.log("suggest keyname:", suggestDirectionKeyName);
     const response = {
-        guideLocation: {}
+        guideLocation: {
+            lat: null,
+            lon: null
+        }
     }
     response.guideLocation =  calculateGuideLocation(currentLocation, suggestDirectionKeyName);
 
