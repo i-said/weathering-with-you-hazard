@@ -9,6 +9,11 @@ html, body {
     height: 100%;
 }
 
+.zmap-h {
+    background-image: "";
+
+
+}
 
 .pin-solid.icon {
     color: #ff0000;

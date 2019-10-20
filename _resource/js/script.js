@@ -247,7 +247,8 @@ function createHinanjyoMarker(lat, lng, name) {
     var el = document.createElement('div');
     el.className = 'marker';
     // el.style.backgroundColor = 'green';
-    el.style.backgroundImage = 'url(./zmap-mini2.png)';
+    el.style.backgroundImage = 'url(./zmap_icon_h.png)';
+    el.style.backgroundSize = 'cover';
     el.style.width = '25px';
     el.style.height = '25px';
 
@@ -265,7 +266,11 @@ function createHinanjyoMarker(lat, lng, name) {
 
 function createEscapeDirectionMarker(lat, lng) {
     var el = document.createElement('div');
-    el.className = 'pin-solid icon';
+    // el.className = 'pin-solid icon';
+    el.style.backgroundImage = 'url(./zmap_icon_goal.png)';
+    el.style.backgroundSize = 'cover';
+    el.style.width = '25px';
+    el.style.height = '25px';
 
     // add marker to map
     const marker = new mapboxgl.Marker(el)
