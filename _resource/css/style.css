@@ -42,3 +42,43 @@ html, body {
     background-color: currentColor;
   }
   
+
+  .navigate-solid.icon {
+    color: #000;
+    position: absolute;
+    margin-left: 6px;
+    margin-top: -1px;
+    width: 14px;
+    height: 18px;
+    -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+  }
+  
+  .navigate-solid.icon:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -17px;
+    width: 0;
+    height: 0;
+    border-top: solid 18px transparent;
+    border-bottom: solid 18px currentColor;
+    border-left: solid 7px transparent;
+    border-right: solid 7px transparent;
+  }
+  
+  .navigate-solid.icon:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 0;
+    height: 0;
+    color: white;
+    border-top: solid 5px transparent;
+    border-bottom: solid 5px currentColor;
+    border-left: solid 7px transparent;
+    border-right: solid 7px transparent;
+  }
+  
+  

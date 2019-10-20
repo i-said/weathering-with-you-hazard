@@ -264,6 +264,15 @@ function createHinanjyoMarker(lat, lng, name) {
     hinanjyoMarkers.push(marker);
 }
 
+function createNaviMaker(lat, lng) {
+    var el = document.createElement('div');
+    el.className = 'navigate-solid icon';
+    // add marker to map
+    const marker = new mapboxgl.Marker(el)
+        .setLngLat(new mapboxgl.LngLat(lng, lat));
+    marker.addTo(map);
+}
+
 function createEscapeDirectionMarker(lat, lng) {
     var el = document.createElement('div');
     // el.className = 'pin-solid icon';
@@ -364,6 +373,8 @@ async function fetchUserEscapeData(currentLat, currentLng) {
     }
 
     createEscapeDirectionMarker(escapeDirection.lat, escapeDirection.lon);
+    createNaviMaker(escapeDirection.guideLocation.lat, escapeDirection.guideLocation.lon);
+
     await clearAndcreateRoute(currentLat, currentLng, escapeDirection.lat, escapeDirection.lon);
 
 }
