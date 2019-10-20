@@ -3,6 +3,7 @@ const axiosJsonpAdapter = require("axios-jsonp");
 const direction = require("./direction");
 let hinanjyoMarkers = [];
 let escapeMarker = null;
+let previousEscapeDirection = null;
 
 
 navigator.serviceWorker.register('./sw-gsidem2mapbox.js', {
@@ -11,7 +12,8 @@ navigator.serviceWorker.register('./sw-gsidem2mapbox.js', {
     if (!navigator.serviceWorker.controller) location.reload();
 });
 
-mapboxgl.accessToken = "pk.eyJ1Ijoic2hteXQiLCJhIjoiY2ozbWE0djUwMDAwMjJxbmR6c2cxejAyciJ9.pqa04_rvKov3Linf7IAWPw";
+const access_token = 'pk.eyJ1Ijoic2hteXQiLCJhIjoiY2ozbWE0djUwMDAwMjJxbmR6c2cxejAyciJ9.pqa04_rvKov3Linf7IAWPw';
+mapboxgl.accessToken = access_token
 var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/cjaudgl840gn32rnrepcb9b9g', // the outdoors-v10 style but without Hillshade layers
@@ -134,6 +136,44 @@ map.on('load', function () {
         }
     });
 
+    // 現在位置連動処理
+    if ("geolocation" in navigator) {
+        navigator.geolocation.watchPosition(async position => {
+            console.log("位置 更新!!!");
+            // 避難所を更新ごとに一旦消す
+            clearEscapeMarker();
+            clearHinanjyoMarkers();
+
+            const currentLat = position.coords.latitude;
+            const currentLng = position.coords.longitude;
+
+            const result = await requestHinanjyoAPI(currentLat, currentLng);
+            if (!result.data.Feature) {
+                return;
+            }
+            // 新しい位置での避難所表示
+            result.data.Feature.forEach(f => {
+                const coordinates = f.Geometry.Coordinates.split(',');
+                createHinanjyoMarker(coordinates[1], coordinates[0], f.Name);
+            });
+
+            // ground escape direction 
+            const escapeDirection = await direction.suggestDirection({ lat: currentLat, lon: currentLng });
+            if (!escapeDirection) {
+                return;
+            }
+
+            // 経路再検索判断
+            if (!previousEscapeDirection) {
+                createEscapeDirectionMarker(escapeDirection.lat, escapeDirection.lon);
+                await clearAndcreateRoute(currentLat, currentLng, escapeDirection.lat, escapeDirection.lon);
+            } else if (getDistance(currentLat, currentLng, escapeDirection.lat, escapeDirection.lon) < 5 && previousEscapeDirection && previousEscapeDirection.lat !== escapeMarker.lat && previousEscapeDirection.lng !== escapeMarker.lng) {
+                createEscapeDirectionMarker(escapeDirection.lat, escapeDirection.lon);
+                await clearAndcreateRoute(currentLat, currentLng, escapeDirection.lat, escapeDirection.lon);
+            }
+        }, (err) => { });
+    } else { /* geolocation IS NOT available, handle it */ }
+
 });
 
 // コントロール関係表示
@@ -145,7 +185,8 @@ map.addControl(new mapboxgl.GeolocateControl({
     positionOptions: {
         enableHighAccuracy: true
     },
-    trackUserLocation: true
+    trackUserLocation: true,
+    showUserLocation: true
 }));
 
 // 洪水レイヤー削除
@@ -206,36 +247,13 @@ async function requestHinanjyoAPI(lat, lng) {
     });
 }
 
-if ("geolocation" in navigator) {
-    navigator.geolocation.watchPosition(async position => {
-        console.log("位置 更新!!!");
-        // 避難所を更新ごとに一旦消す
-        clearEscapeMarker();
-        clearHinanjyoMarkers();
+async function requestRouteAPI(flat, flng, tlat, tlng) {
+    var url = `https://api.mapbox.com/directions/v5/mapbox/walking/${tlng},${tlat};${flng},${flat}?geometries=geojson&access_token=${access_token}`;
+    return await axios(url).then(res => {
+        return res;
+    });
+}
 
-        const currentLat = position.coords.latitude;
-        const currentLng = position.coords.longitude;
-
-        const result = await requestHinanjyoAPI(currentLat, currentLng);
-        if (!result.data.Feature) {
-            return;
-        }
-        // 新しい位置での避難所表示
-        result.data.Feature.forEach(f => {
-            const coordinates = f.Geometry.Coordinates.split(',');
-            createHinanjyoMarker(coordinates[1], coordinates[0], f.Name);
-        });
-
-        // ground escape direction 
-        const escapeDirection = await direction.suggestDirection({ lat: currentLat, lon: currentLng });
-        if (!escapeDirection) {
-            return;
-        }
-        createEscapeDirectionMarker(escapeDirection.lat, escapeDirection.lon);
-        console.log(escapeDirection);
-
-    }, (err) => { });
-} else { /* geolocation IS NOT available, handle it */ }
 
 function createHinanjyoMarker(lat, lng, name) {
     var el = document.createElement('div');
@@ -288,3 +306,55 @@ function clearEscapeMarker() {
     }
     escapeMarker = null;
 }
+
+async function clearAndcreateRoute(flat, flng, tlat, tlng) {
+    const LayerRouteId = 'layer-route';
+    const route = await requestRouteAPI(flat, flng, tlat, tlng);
+    if (!route) {
+        return;
+    }
+    console.log(route);
+    const routeGeometry = route.data.routes[0].geometry;
+    console.log(routeGeometry);
+    if (!routeGeometry) {
+        return;
+    }
+
+    if (map.getLayer(LayerRouteId)) {
+        map.removeLayer(LayerRouteId);
+        map.removeSource(LayerRouteId);
+    }
+
+    map.addLayer({
+        "id": LayerRouteId,
+        "type": "line",
+        "source": {
+            "type": "geojson",
+            "data": routeGeometry
+        },
+        "layout": {
+            "line-join": "round",
+            "line-cap": "round"
+        },
+        "paint": {
+            "line-color": "#0000dd",
+            "line-width": 5
+        }
+    }
+    );
+}
+
+//２点間を計算する関数
+//距離の計算//
+function getDistance(lat1, lng1, lat2, lng2) {
+
+    function radians(deg) {
+        return deg * Math.PI / 180;
+    }
+
+    return 6378.14 * Math.acos(Math.cos(radians(lat1)) *
+        Math.cos(radians(lat2)) *
+        Math.cos(radians(lng2) - radians(lng1)) +
+        Math.sin(radians(lat1)) *
+        Math.sin(radians(lat2)));
+};
