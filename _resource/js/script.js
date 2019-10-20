@@ -4,6 +4,13 @@ const direction = require("./direction");
 let hinanjyoMarkers = [];
 let escapeMarker = null;
 
+
+navigator.serviceWorker.register('./sw-gsidem2mapbox.js', {
+    scope: './'
+}).then(registration => {
+    if (!navigator.serviceWorker.controller) location.reload();
+});
+
 mapboxgl.accessToken = "pk.eyJ1Ijoic2hteXQiLCJhIjoiY2ozbWE0djUwMDAwMjJxbmR6c2cxejAyciJ9.pqa04_rvKov3Linf7IAWPw";
 var map = new mapboxgl.Map({
     container: 'map',
@@ -14,21 +21,27 @@ var map = new mapboxgl.Map({
 
 map.on('load', function () {
     const mapopacity = 0.5
-    // map.addSource('gis-dem', {
+    // map.addSource('dem', {
     //     "type": "raster-dem",
-    //     "encoding": "gsi",
-    //     "tiles": [
-    //         "https://cyberjapandata.gsi.go.jp/xyz/dem_png/{z}/{x}/{y}.png"
-    //     ],
-    //     "tileSize": 256,
-    //     "maxzoom": 14,
-    //     "attribution": '<a href="https://maps.gsi.go.jp/development/ichiran.html#dem" target="_blank">地理院標高タイル</a>'
+    //     "url": "mapbox://mapbox.terrain-rgb"
     // });
-    map.addSource('dem', {
-        "type": "raster-dem",
-        "url": "mapbox://mapbox.terrain-rgb"
+    map.addSource('gsi-pale', {
+        "type": "raster",
+        "tiles": [
+            "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
+        ],
+        "tileSize": 256,
+        "attribution": "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>"
     });
-
+    map.addSource('gsi-dem', {
+        "type": "raster-dem",
+        "tiles": [
+            "https://cyberjapandata.gsi.go.jp/xyz/dem_png/{z}/{x}/{y}.png"
+        ],
+        "tileSize": 256,
+        "maxzoom": 15,
+        "attribution": "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>"
+    });
     map.addSource('MIERUNEMAP', {
         "type": "raster",
         "tiles": ["https://tile.mierune.co.jp/mierune_mono/{z}/{x}/{y}.png@2x"],
@@ -75,17 +88,24 @@ map.on('load', function () {
     });
 
     // map.addLayer({
-    //     "id": "GSI dem",
-    //     "source": "gsi-dem",
-    //     "type": "hillshade"
-    // }, 'waterway-river-canal-shadow');
+    //     "id": "GSI pale dem",
+    //     "source": "gsi-pale",
+    //     "type": "raster"
+    // });
+    // map.addLayer({
+    //     "id": "dem",
+    //     "type": "hillshade",
+    //     "source": "dem",
+    //     "minzoom": 0,
+    //     "maxzoom": 18,
+    // });
+
     map.addLayer({
-        "id": "dem",
+        "id": "GSI dem",
+        "source": "gsi-dem",
         "type": "hillshade",
-        "source": "dem",
-        "minzoom": 0,
-        "maxzoom": 18,
-    });
+    }, 'waterway-river-canal-shadow');
+
     map.addLayer({
         "id": "KYUKEISHAKEIKAIKUIKI",
         "type": "raster",
