@@ -22,7 +22,7 @@ var map = new mapboxgl.Map({
 });
 
 map.on('load', function () {
-    const mapopacity = 0.5
+    const mapopacity = 0.7
     // map.addSource('dem', {
     //     "type": "raster-dem",
     //     "url": "mapbox://mapbox.terrain-rgb"
