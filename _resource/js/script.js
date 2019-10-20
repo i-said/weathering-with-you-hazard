@@ -147,33 +147,14 @@ map.on('load', function () {
             const currentLat = position.coords.latitude;
             const currentLng = position.coords.longitude;
 
-            const result = await requestHinanjyoAPI(currentLat, currentLng);
-            if (!result.data.Feature) {
-                return;
-            }
-            // 新しい位置での避難所表示
-            result.data.Feature.forEach(f => {
-                const coordinates = f.Geometry.Coordinates.split(',');
-                createHinanjyoMarker(coordinates[1], coordinates[0], f.Name);
-            });
-
-            // ground escape direction 
-            const escapeDirection = await direction.suggestDirection({ lat: currentLat, lon: currentLng });
-            if (!escapeDirection) {
-                return;
-            }
-
             // 経路再検索判断
             if (!previousEscapeDirection) {
-                createEscapeDirectionMarker(escapeDirection.lat, escapeDirection.lon);
-                await clearAndcreateRoute(currentLat, currentLng, escapeDirection.lat, escapeDirection.lon);
+                fetchUserEscapeData(currentLat, currentLng);
             } else if (getDistance(currentLat, currentLng, escapeDirection.lat, escapeDirection.lon) < 5 && previousEscapeDirection && previousEscapeDirection.lat !== escapeMarker.lat && previousEscapeDirection.lng !== escapeMarker.lng) {
-                createEscapeDirectionMarker(escapeDirection.lat, escapeDirection.lon);
-                await clearAndcreateRoute(currentLat, currentLng, escapeDirection.lat, escapeDirection.lon);
+                fetchUserEscapeData(currentLat, currentLng);
             }
         }, (err) => { });
     } else { /* geolocation IS NOT available, handle it */ }
-
 });
 
 // コントロール関係表示
@@ -358,3 +339,25 @@ function getDistance(lat1, lng1, lat2, lng2) {
         Math.sin(radians(lat1)) *
         Math.sin(radians(lat2)));
 };
+
+async function fetchUserEscapeData(currentLat, currentLng) {
+    const result = await requestHinanjyoAPI(currentLat, currentLng);
+    if (!result.data.Feature) {
+        return;
+    }
+    // 新しい位置での避難所表示
+    result.data.Feature.forEach(f => {
+        const coordinates = f.Geometry.Coordinates.split(',');
+        createHinanjyoMarker(coordinates[1], coordinates[0], f.Name);
+    });
+
+    // ground escape direction 
+    const escapeDirection = await direction.suggestDirection({ lat: currentLat, lon: currentLng });
+    if (!escapeDirection) {
+        return;
+    }
+
+    createEscapeDirectionMarker(escapeDirection.lat, escapeDirection.lon);
+    await clearAndcreateRoute(currentLat, currentLng, escapeDirection.lat, escapeDirection.lon);
+
+}
