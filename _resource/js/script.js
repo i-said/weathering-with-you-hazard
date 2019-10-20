@@ -147,34 +147,14 @@ map.on('load', function () {
             const currentLat = position.coords.latitude;
             const currentLng = position.coords.longitude;
 
-            const result = await requestHinanjyoAPI(currentLat, currentLng);
-            if (!result.data.Feature) {
-                return;
-            }
-            // 新しい位置での避難所表示
-            result.data.Feature.forEach(f => {
-                const coordinates = f.Geometry.Coordinates.split(',');
-                createHinanjyoMarker(coordinates[1], coordinates[0], f.Name);
-            });
-
-            // ground escape direction 
-            const escapeDirection = await direction.suggestDirection({ lat: currentLat, lon: currentLng });
-            if (!escapeDirection) {
-                return;
-            }
-
-            console.log("escaaaaaaaaaaaaaaaaape:  ", escapeDirection)
             // 経路再検索判断
             if (!previousEscapeDirection) {
-                createEscapeDirectionMarker(escapeDirection.lat, escapeDirection.lon);
-                await clearAndcreateRoute(currentLat, currentLng, escapeDirection.lat, escapeDirection.lon);
+                fetchUserEscapeData(currentLat, currentLng);
             } else if (getDistance(currentLat, currentLng, escapeDirection.lat, escapeDirection.lon) < 5 && previousEscapeDirection && previousEscapeDirection.lat !== escapeMarker.lat && previousEscapeDirection.lng !== escapeMarker.lng) {
-                createEscapeDirectionMarker(escapeDirection.lat, escapeDirection.lon);
-                await clearAndcreateRoute(currentLat, currentLng, escapeDirection.lat, escapeDirection.lon);
+                fetchUserEscapeData(currentLat, currentLng);
             }
         }, (err) => { });
     } else { /* geolocation IS NOT available, handle it */ }
-
 });
 
 // コントロール関係表示
@@ -266,13 +246,11 @@ async function requestRouteAPI(flat, flng, tlat, tlng) {
 function createHinanjyoMarker(lat, lng, name) {
     var el = document.createElement('div');
     el.className = 'marker';
-    el.style.backgroundColor = 'green';
-    el.style.width = '10px';
-    el.style.height = '10px';
+    // el.style.backgroundColor = 'green';
+    el.style.backgroundImage = 'url(./zmap-mini2.png)';
+    el.style.width = '25px';
+    el.style.height = '25px';
 
-    // el.addEventListener('click', function () {
-    //     window.alert(marker.properties.message);
-    // });
     // create the popup
     var popup = new mapboxgl.Popup()
         .setText(name);
@@ -282,16 +260,12 @@ function createHinanjyoMarker(lat, lng, name) {
         .setPopup(popup)
         .setLngLat(new mapboxgl.LngLat(lng, lat));
     marker.addTo(map);
-    // marker.togglePopup();
     hinanjyoMarkers.push(marker);
 }
 
 function createEscapeDirectionMarker(lat, lng) {
     var el = document.createElement('div');
-    el.className = 'marker';
-    el.style.backgroundColor = 'red';
-    el.style.width = '15px';
-    el.style.height = '15px';
+    el.className = 'pin-solid icon';
 
     // add marker to map
     const marker = new mapboxgl.Marker(el)
@@ -345,8 +319,8 @@ async function clearAndcreateRoute(flat, flng, tlat, tlng) {
             "line-cap": "round"
         },
         "paint": {
-            "line-color": "#0000dd",
-            "line-width": 5
+            "line-color": "#1976d2",
+            "line-width": 4
         }
     }
     );
@@ -366,3 +340,25 @@ function getDistance(lat1, lng1, lat2, lng2) {
         Math.sin(radians(lat1)) *
         Math.sin(radians(lat2)));
 };
+
+async function fetchUserEscapeData(currentLat, currentLng) {
+    const result = await requestHinanjyoAPI(currentLat, currentLng);
+    if (!result.data.Feature) {
+        return;
+    }
+    // 新しい位置での避難所表示
+    result.data.Feature.forEach(f => {
+        const coordinates = f.Geometry.Coordinates.split(',');
+        createHinanjyoMarker(coordinates[1], coordinates[0], f.Name);
+    });
+
+    // ground escape direction 
+    const escapeDirection = await direction.suggestDirection({ lat: currentLat, lon: currentLng });
+    if (!escapeDirection) {
+        return;
+    }
+
+    createEscapeDirectionMarker(escapeDirection.lat, escapeDirection.lon);
+    await clearAndcreateRoute(currentLat, currentLng, escapeDirection.lat, escapeDirection.lon);
+
+}
