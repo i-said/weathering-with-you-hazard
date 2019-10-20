@@ -5,15 +5,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
     <title>Ground Escape</title>
 </head>
 
 <body>
-    <button id='kouzui'>洪水 表示切り替え 表示中</button>
-    <button id='dosya'>土砂災害 表示切り替え 表示中</button>
-    <button id='hyoukou'>標高 表示切り替え 表示中</button>
+    <nav class="grey nav-extended" role="navigation">
+      <div class="nav-wrapper container">
+        <a id="logo-container" href="#" class="brand-logo">Zmap</a>
+      </div>
+      <div class="nav-content  grey lighten-1">
+          <ul class="tabs tabs-transparent">
+            <li class="tab">
+                <a id='kouzui'>洪水 表示切り替え 表示中</a>
+            </li>
+            <li class="tab" >
+              <a id='dosya'>土砂災害 表示切り替え 表示中</a>
+            </li>
+            <li class="tab">
+                <a id='hyoukou'>標高 表示切り替え 表示中</a>
+            </li>
+          </ul>
+        </div>
+    </nav>
     <div id="map"></div>
+    <!-- Script -->
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
     <script src="app.js"></script>
+
 </body>
 
 </html>
