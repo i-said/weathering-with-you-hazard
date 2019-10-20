@@ -226,7 +226,7 @@ document.getElementById('hyoukou').addEventListener('click', (elm) => {
  * @param {*} lng 
  */
 async function requestHinanjyoAPI(lat, lng) {
-    var url = `https://map.yahooapis.jp/search/local/V1/localSearch?appid=dj00aiZpPWthaFNxUDdmN3pTUSZzPWNvbnN1bWVyc2VjcmV0Jng9Y2Y-&output=jsonp&gc=0425&dist=3&results=100&lat=${lat}&lon=${lng}`;
+    var url = `https://map.yahooapis.jp/search/local/V1/localSearch?appid=dj00aiZpPWthaFNxUDdmN3pTUSZzPWNvbnN1bWVyc2VjcmV0Jng9Y2Y-&output=jsonp&gc=0425&dist=3&results=100&lat=${lat}&lon=${lng}&sort=dist`;
     const config = {
         adapter: axiosJsonpAdapter
     };
