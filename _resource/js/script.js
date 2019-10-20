@@ -306,6 +306,7 @@ function clearEscapeMarker() {
 async function clearAndcreateRoute(flat, flng, tlat, tlng) {
     const LayerRouteId = 'layer-route';
     const route = await requestRouteAPI(flat, flng, tlat, tlng);
+    console.log(route);
     if (!route) {
         return;
     }
@@ -361,20 +362,21 @@ async function fetchUserEscapeData(currentLat, currentLng) {
         return;
     }
     // 新しい位置での避難所表示
+    let coordinates;
     result.data.Feature.forEach(f => {
-        const coordinates = f.Geometry.Coordinates.split(',');
+        coordinates = f.Geometry.Coordinates.split(',');
         createHinanjyoMarker(coordinates[1], coordinates[0], f.Name);
     });
 
     // ground escape direction 
     const escapeDirection = await direction.suggestDirection({ lat: currentLat, lon: currentLng });
-    if (!escapeDirection) {
-        return;
-    }
+    // if (!escapeDirection) {
+    //     return;
+    // }
 
     createEscapeDirectionMarker(escapeDirection.lat, escapeDirection.lon);
     createNaviMaker(escapeDirection.guideLocation.lat, escapeDirection.guideLocation.lon);
 
-    await clearAndcreateRoute(currentLat, currentLng, escapeDirection.lat, escapeDirection.lon);
-
+    // await clearAndcreateRoute(currentLat, currentLng, escapeDirection.lat, escapeDirection.lon);
+    await clearAndcreateRoute(currentLat, currentLng, coordinates[1], coordinates[0]);
 }
